@@ -10,8 +10,8 @@ pub struct Battle {
 impl Battle {
     pub fn new() -> Battle {
         let boot_time = SystemTime::now();
-        let player_1 = Combatant::new("player_1", boot_time);
-        let player_2 = Combatant::new("player_2", boot_time);
+        let player_1 = Combatant::new("Elf", boot_time);
+        let player_2 = Combatant::new("Orc", boot_time);
         let combatants = vec![player_1, player_2];
         Battle {
             combatants: combatants

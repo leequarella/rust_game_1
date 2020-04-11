@@ -6,11 +6,11 @@ use std::time::SystemTime;
 struct Maneuver {
     name: String,
     round_time: u64,
-    damage: u32,
+    damage: Vec<u32>,
 }
 
 impl Maneuver {
-    fn new(name: &str, round_time: u64, damage: u32) -> Maneuver {
+    fn new(name: &str, round_time: u64, damage: Vec<u32>) -> Maneuver {
         Maneuver{
             name: name.to_string(),
             round_time: round_time,
@@ -29,9 +29,10 @@ pub struct Combatant {
 
 impl Combatant {
     pub fn new(name: &str, last_action: SystemTime) -> Combatant {
-        let punch = Maneuver::new("Punch", 2, 1);
-        let kick = Maneuver::new("Kick", 5, 3);
-        let maneuvers = vec![punch, kick];
+        let punch = Maneuver::new("Punch", 2, vec![1,2]);
+        let kick = Maneuver::new("Kick", 5, vec![1,2,3,4]);
+        let jab = Maneuver::new("Jab", 1, vec![1]);
+        let maneuvers = vec![punch, kick, jab];
         Combatant {
             name: name.to_string(),
             damage: 0,
@@ -54,7 +55,6 @@ impl Combatant {
            .expect("Clock may have gone backwards");
         if time_since_last_action.as_secs() >= self.round_time {
             self.perform_maneuver(time_now);
-            println!("{:?}", time_since_last_action);
         }
     }
 
@@ -62,7 +62,11 @@ impl Combatant {
       let maneuver = self.maneuvers.choose(&mut rand::thread_rng()).unwrap();
       self.last_action = time_now;
       self.round_time = maneuver.round_time;
-      println!("");
-      println!("    {}: {}, [round time {}]", self.name, maneuver.name, self.round_time);
+      let damage = maneuver.damage.choose(&mut rand::thread_rng()).unwrap();
+      println!("    {}: {} for {} damage. [round time {}]",
+               self.name,
+               maneuver.name,
+               damage,
+               self.round_time);
     }
 }
